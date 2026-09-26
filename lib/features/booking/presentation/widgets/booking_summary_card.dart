@@ -16,7 +16,7 @@ class BookingSummaryCard extends StatelessWidget {
         if (!state.hasSelection) return const SizedBox.shrink();
 
         return Card(
-          color: AppColors.secondary.withOpacity(0.2),
+          color: AppColors.secondary.withValues(alpha: 0.2),
           margin: EdgeInsets.zero,
           child: Padding(
             padding: EdgeInsets.all(16.r),

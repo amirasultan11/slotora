@@ -26,16 +26,16 @@ class SlotTile extends StatelessWidget {
     Color borderColor = Colors.transparent;
 
     if (slot.status == SlotStatus.booked) {
-      bgColor = AppColors.error.withOpacity(0.2);
+      bgColor = AppColors.error.withValues(alpha: 0.2);
       textColor = AppColors.error;
     } else if (slot.status == SlotStatus.unavailable) {
-      bgColor = Colors.grey.withOpacity(0.2);
+      bgColor = Colors.grey.withValues(alpha: 0.2);
       textColor = Colors.grey;
     } else if (isSelectedRange) {
       bgColor = AppColors.primary;
       textColor = Colors.white;
     } else if (!isValidStart) {
-      bgColor = Colors.grey.withOpacity(0.1);
+      bgColor = Colors.grey.withValues(alpha: 0.1);
       textColor = Colors.grey;
     } else {
       borderColor = AppColors.border;

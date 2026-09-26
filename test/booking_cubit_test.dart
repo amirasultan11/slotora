@@ -1,9 +1,7 @@
 import 'package:flutter_test/flutter_test.dart';
 
 import 'package:slotora/features/booking/presentation/cubit/booking_cubit.dart';
-import 'package:slotora/features/booking/presentation/cubit/booking_state.dart';
 import 'package:slotora/features/booking/domain/models/booking_duration.dart';
-import 'package:slotora/features/booking/domain/models/slot_status.dart';
 
 void main() {
   group('BookingCubit', () {
