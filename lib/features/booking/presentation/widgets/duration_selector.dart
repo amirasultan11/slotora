@@ -13,7 +13,7 @@ class DurationSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BookingCubit, BookingState>(
-
+      buildWhen: (prev, curr) => prev.selectedDuration != curr.selectedDuration,
       builder: (context, state) {
         return Wrap(
           spacing: 10.w,
@@ -25,12 +25,13 @@ class DurationSelector extends StatelessWidget {
               selected: isSelected,
               onSelected: (_) => context.read<BookingCubit>().changeDuration(duration),
               selectedColor: AppColors.primary,
-              backgroundColor: AppColors.surface,
+              backgroundColor: AppColors.surface.withValues(alpha: 0.5),
+              showCheckmark: false,
               labelStyle: isSelected 
                   ? AppTextStyles.semiBold16.copyWith(color: Colors.white)
                   : AppTextStyles.regular14,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8.r),
+                borderRadius: BorderRadius.circular(24.r),
                 side: BorderSide(color: isSelected ? AppColors.primary : AppColors.border),
               ),
             );
