@@ -4,6 +4,7 @@ import '../../domain/models/booking_duration.dart';
 import '../../domain/models/slot_status.dart';
 import '../../domain/models/time_slot.dart';
 import '../../domain/services/booking_validator.dart';
+import '../../domain/services/booking_result.dart';
 import '../../data/local/booking_local_data.dart';
 
 class BookingCubit extends Cubit<BookingState> {
@@ -34,12 +35,8 @@ class BookingCubit extends Cubit<BookingState> {
   }
 
   void selectStartTime(int index) {
-    if (!state.validStartIndices.contains(index)) {
-      emit(state.copyWith(
-        errorMessage: () => 'This booking would leave an isolated 30-minute gap.',
-      ));
-      return;
-    }
+    if (!state.validStartIndices.contains(index)) return;
+    
     emit(state.copyWith(
       selectedStartIndex: () => index,
       errorMessage: () => null,
@@ -50,6 +47,18 @@ class BookingCubit extends Cubit<BookingState> {
     if (state.selectedStartIndex == null) return;
     
     final start = state.selectedStartIndex!;
+    
+    final result = BookingValidator.validate(
+      slots: state.slots,
+      startIndex: start,
+      duration: state.selectedDuration,
+    );
+
+    if (result is BookingFailure) {
+      emit(state.copyWith(errorMessage: () => result.reason));
+      return;
+    }
+
     final end = start + state.selectedDuration.slotsCount;
     
     final newHistory = List<List<TimeSlot>>.from(state.history)..add(List.of(state.slots));

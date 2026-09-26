@@ -41,7 +41,7 @@ class SlotTile extends StatelessWidget {
       borderColor = AppColors.border;
     }
 
-    final isClickable = (slot.status == SlotStatus.available && isValidStart) || isSelectedRange;
+    final isClickable = slot.status == SlotStatus.available && isValidStart;
 
     return InkWell(
       onTap: isClickable ? onTap : null,

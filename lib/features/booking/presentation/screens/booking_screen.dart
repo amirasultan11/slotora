@@ -7,7 +7,7 @@ import '../widgets/booking_header.dart';
 import '../widgets/duration_selector.dart';
 import '../widgets/slot_grid.dart';
 import '../widgets/booking_actions.dart';
-import '../widgets/status_legend.dart';
+
 import '../widgets/booking_summary_card.dart';
 import '../../../../core/utils/app_text_styles.dart';
 
@@ -45,7 +45,7 @@ class BookingScreen extends StatelessWidget {
               SizedBox(height: 30.h),
               Text('2. Select Start Time', style: AppTextStyles.bold18),
               SizedBox(height: 12.h),
-              const StatusLegend(),
+
               SizedBox(height: 16.h),
               const SlotGrid(),
               SizedBox(height: 24.h),

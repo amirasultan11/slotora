@@ -9,8 +9,8 @@ class GapChecker {
     for (var i = 0; i < totalSlots; i++) {
       if (slots[i].status != SlotStatus.available) continue;
       
-      final leftBlocked = i == 0 || slots[i - 1].status != SlotStatus.available;
-      final rightBlocked = i == totalSlots - 1 || slots[i + 1].status != SlotStatus.available;
+      final leftBlocked = i > 0 && slots[i - 1].status != SlotStatus.available;
+      final rightBlocked = i < totalSlots - 1 && slots[i + 1].status != SlotStatus.available;
       
       if (leftBlocked && rightBlocked) return i;
     }

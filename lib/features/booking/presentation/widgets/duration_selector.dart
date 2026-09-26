@@ -13,7 +13,7 @@ class DurationSelector extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<BookingCubit, BookingState>(
-      buildWhen: (prev, curr) => prev.selectedDuration != curr.selectedDuration,
+
       builder: (context, state) {
         return Wrap(
           spacing: 10.w,
