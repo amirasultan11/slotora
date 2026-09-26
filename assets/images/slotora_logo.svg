@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" width="120" height="120" fill="none">
+  <defs>
+    <linearGradient id="logoGradPrimary" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366F1" />
+      <stop offset="50%" stop-color="#4F46E5" />
+      <stop offset="100%" stop-color="#4338CA" />
+    </linearGradient>
+    <linearGradient id="logoGradAccent" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#38BDF8" />
+      <stop offset="100%" stop-color="#6366F1" />
+    </linearGradient>
+    <linearGradient id="logoGradGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#34D399" />
+      <stop offset="100%" stop-color="#059669" />
+    </linearGradient>
+  </defs>
+
+  <!-- Logo Icon Container: Rounded squircle badge with slot notches -->
+  <g id="logo-icon" transform="translate(10, 10)">
+    <!-- Base squircle -->
+    <rect x="0" y="0" width="100" height="100" rx="26" fill="url(#logoGradPrimary)" />
+    
+    <!-- Outer accent ring / slot indicator -->
+    <rect x="5" y="5" width="90" height="90" rx="22" stroke="white" stroke-opacity="0.15" stroke-width="2" />
+    
+    <!-- Calendar Header line -->
+    <line x1="22" y1="34" x2="78" y2="34" stroke="white" stroke-opacity="0.25" stroke-width="2.5" stroke-linecap="round" />
+    
+    <!-- Top Binding Loops -->
+    <rect x="30" y="10" width="6" height="12" rx="3" fill="#38BDF8" />
+    <rect x="64" y="10" width="6" height="12" rx="3" fill="#38BDF8" />
+    
+    <!-- Stylized S-curve Time Slot Path inside Calendar -->
+    <path id="slot-track" d="M 32 48 H 58 C 65 48 70 53 70 60 C 70 67 65 72 58 72 H 42 C 35 72 30 77 30 84 C 30 87 32 90 35 90 H 68" 
+          stroke="url(#logoGradAccent)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+          
+    <!-- Dynamic Slot Markers -->
+    <circle cx="32" cy="48" r="4.5" fill="#38BDF8" />
+    <circle cx="50" cy="60" r="3.5" fill="#A5B4FC" />
+    <circle cx="68" cy="90" r="4.5" fill="#34D399" />
+    
+    <!-- Pulse check badge on top right -->
+    <circle cx="82" cy="18" r="5" fill="#10B981" />
+  </g>
+
+</svg>

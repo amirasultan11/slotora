@@ -1,12 +1,13 @@
 flutter_native_splash:
   color: "#FAF8F4"
-  image: "assets/icon.png"
+  color_dark: "#0F172A"
+  image: "assets/images/slotora_app_icon.png"
 
   android: true
   ios: true
   web: false
 
   android_12:
-    image: "assets/icon.png"
+    image: "assets/images/slotora_app_icon.png"
     icon_background_color: "#FAF8F4"
-
+    icon_background_color_dark: "#0F172A"

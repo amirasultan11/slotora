@@ -1,35 +1,21 @@
-# Slotora Booking Feature
+# Slotora
 
-A robust and clean Flutter implementation of a booking system with complex validation rules.
+Slotora is a local appointment scheduling app. It lets users choose a booking
+duration, view available time slots, validate a selection, and confirm a
+booking. The app includes light and dark themes and English and Arabic
+localization.
 
-## Architecture
+## Development
 
-This project follows a Lean Clean Architecture tailored for Flutter:
-
-```text
-lib/
-├── core/
-│   ├── theme/
-│   ├── utils/
-│   └── localization/
-├── features/
-│   └── booking/
-│       ├── data/
-│       │   └── local/
-│       ├── domain/
-│       │   ├── models/
-│       │   └── services/
-│       └── presentation/
-│           ├── cubit/
-│           ├── screens/
-│           └── widgets/
-└── main.dart
+```sh
+flutter pub get
+flutter analyze
+flutter test
 ```
 
-## Logic Distribution
+## Release builds
 
-The BookingCubit orchestrates state transitions,
-while booking validation is handled by the domain layer.
-
-- **BookingValidator**: Handles rules like `X O X` gap prevention, overlap checking, and valid starts calculation.
-- **BookingCubit**: Manages the UI state, duration selection, and history (undo/redo).
+Configure a publisher-owned Android application ID and release signing key
+before publishing. The checked-in Android release build currently uses the
+debug signing configuration. Configure the iOS bundle identifier and signing
+team in Xcode before distributing an iOS build.

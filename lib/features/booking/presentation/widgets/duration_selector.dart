@@ -1,43 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../cubit/booking_cubit.dart';
-import '../cubit/booking_state.dart';
-import '../../domain/models/booking_duration.dart';
-import '../../../../core/utils/app_colors.dart';
-import '../../../../core/utils/app_text_styles.dart';
 
+import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/theme/app_colors.dart';
+import '../../../../data/models/booking_duration.dart';
+import 'duration_option_tile.dart';
+
+/// Duration selector component allowing users to choose between 30m, 1h, 1.5h, 2h.
 class DurationSelector extends StatelessWidget {
-  const DurationSelector({super.key});
+  final BookingDuration selectedDuration;
+  final ValueChanged<BookingDuration> onDurationChanged;
+
+  const DurationSelector({
+    super.key,
+    required this.selectedDuration,
+    required this.onDurationChanged,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<BookingCubit, BookingState>(
-      buildWhen: (prev, curr) => prev.selectedDuration != curr.selectedDuration,
-      builder: (context, state) {
-        return Wrap(
-          spacing: 10.w,
-          runSpacing: 10.h,
-          children: BookingDuration.values.map((duration) {
-            final isSelected = state.selectedDuration == duration;
-            return ChoiceChip(
-              label: Text(duration.label),
-              selected: isSelected,
-              onSelected: (_) => context.read<BookingCubit>().changeDuration(duration),
-              selectedColor: AppColors.primary,
-              backgroundColor: AppColors.surface.withValues(alpha: 0.5),
-              showCheckmark: false,
-              labelStyle: isSelected 
-                  ? AppTextStyles.semiBold16.copyWith(color: Colors.white)
-                  : AppTextStyles.regular14,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(24.r),
-                side: BorderSide(color: isSelected ? AppColors.primary : AppColors.border),
+    final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
+
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              l10n.selectDuration,
+              style: TextStyle(
+                fontSize: 14.5,
+                fontWeight: FontWeight.w700,
+                color: isDark
+                    ? AppColors.darkTextPrimary
+                    : AppColors.lightTextPrimary,
+                letterSpacing: -0.2,
               ),
+            ),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 3),
+              decoration: BoxDecoration(
+                color: AppColors.primary.withValues(alpha: 0.1),
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                '${selectedDuration.requiredSlotCount} ${l10n.isArabic ? (selectedDuration.requiredSlotCount == 1 ? "خانة" : "خانات") : (selectedDuration.requiredSlotCount == 1 ? "slot" : "slots")}',
+                style: const TextStyle(
+                  fontSize: 11.5,
+                  fontWeight: FontWeight.w600,
+                  color: AppColors.primary,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 10),
+        Row(
+          children: BookingDuration.values.map((duration) {
+            return DurationOptionTile(
+              duration: duration,
+              isSelected: selectedDuration == duration,
+              isDark: isDark,
+              onSelect: onDurationChanged,
             );
           }).toList(),
-        );
-      },
+        ),
+      ],
     );
   }
 }
