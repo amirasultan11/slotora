@@ -1,1 +1,6 @@
-// TODO: SlotStatus enum — available, booked, unavailable, selected.
+enum SlotStatus {
+  available,
+  booked,
+  unavailable,
+  selected,
+}

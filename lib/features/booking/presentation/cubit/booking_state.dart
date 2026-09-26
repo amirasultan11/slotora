@@ -1,8 +1,6 @@
-// TODO: BookingState — immutable state class (slots, duration, error, history)
-
-import 'package:slotora/features/booking/domain/models/booking_duration.dart';
-import 'package:slotora/features/booking/domain/models/slot_status.dart';
-import 'package:slotora/features/booking/domain/models/time_slot.dart';
+import '../../domain/models/booking_duration.dart';
+import '../../domain/models/slot_status.dart';
+import '../../domain/models/time_slot.dart';
 
 class BookingState {
   final List<TimeSlot> slots;
@@ -10,6 +8,7 @@ class BookingState {
   final int? selectedStartIndex;
   final String? errorMessage;
   final List<List<TimeSlot>> history;
+  final List<int> validStartIndices;
 
   const BookingState({
     required this.slots,
@@ -17,20 +16,17 @@ class BookingState {
     this.selectedStartIndex,
     this.errorMessage,
     this.history = const [],
+    this.validStartIndices = const [],
   });
 
-  //Computed Getters
   bool get hasSelection => selectedStartIndex != null;
-
-  int get bookedMinutes =>
-      slots.where((s) => s.status == SlotStatus.booked).length * 30;
-
-  int get availableMinutes =>
-      slots.where((s) => s.status == SlotStatus.available).length * 30;
-
-  String? get selectedStartLabel =>
-      selectedStartIndex != null ? slots[selectedStartIndex!].label : null;
-
+  bool get canUndo => history.isNotEmpty;
+  
+  int get bookedMinutes => slots.where((s) => s.status == SlotStatus.booked).length * 30;
+  int get availableMinutes => slots.where((s) => s.status == SlotStatus.available).length * 30;
+  
+  String? get selectedStartLabel => selectedStartIndex != null ? slots[selectedStartIndex!].label : null;
+  
   String? get selectedEndLabel {
     if (selectedStartIndex == null) return null;
     final endIndex = selectedStartIndex! + selectedDuration.slotsCount;
@@ -42,22 +38,21 @@ class BookingState {
     return '$displayHour:${minute.toString().padLeft(2, '0')} $period';
   }
 
-  bool get canUndo => history.isNotEmpty;
   BookingState copyWith({
     List<TimeSlot>? slots,
     BookingDuration? selectedDuration,
     int? Function()? selectedStartIndex,
     String? Function()? errorMessage,
     List<List<TimeSlot>>? history,
+    List<int>? validStartIndices,
   }) {
     return BookingState(
       slots: slots ?? this.slots,
       selectedDuration: selectedDuration ?? this.selectedDuration,
-      selectedStartIndex: selectedStartIndex != null
-          ? selectedStartIndex()
-          : this.selectedStartIndex,
+      selectedStartIndex: selectedStartIndex != null ? selectedStartIndex() : this.selectedStartIndex,
       errorMessage: errorMessage != null ? errorMessage() : this.errorMessage,
       history: history ?? this.history,
+      validStartIndices: validStartIndices ?? this.validStartIndices,
     );
   }
 }
