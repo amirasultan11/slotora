@@ -48,8 +48,9 @@ class ScheduleLegend extends StatelessWidget {
             isDark: isDark,
           ),
           ScheduleLegendItem(
-            color:
-                isDark ? AppColors.unavailableDark : AppColors.unavailableLight,
+            color: isDark
+                ? AppColors.unavailableDark
+                : AppColors.unavailableLight,
             label: l10n.legendUnavailable,
             icon: Icons.block_flipped,
             isDark: isDark,

@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 
-/// Reset section in the drawer that allows restoring baseline mock schedule.
+/// Drawer section that allows restoring the baseline mock schedule.
 class DrawerResetSection extends StatelessWidget {
   final bool isDark;
   final AppLocalizations l10n;
@@ -21,7 +21,7 @@ class DrawerResetSection extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: (isDark ? AppColors.darkCard : AppColors.lightBg),
+        color: isDark ? AppColors.darkCard : AppColors.lightBg,
         borderRadius: BorderRadius.circular(14),
         border: Border.all(
           color: isDark ? AppColors.darkBorder : AppColors.lightBorder,
@@ -32,9 +32,7 @@ class DrawerResetSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            l10n.isArabic
-                ? 'إعادة ضبط الجدول التجريبي'
-                : 'Reset Baseline Schedule',
+            l10n.resetBaselineTitle,
             style: TextStyle(
               fontSize: 13,
               fontWeight: FontWeight.w700,
@@ -45,9 +43,7 @@ class DrawerResetSection extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            l10n.isArabic
-                ? 'استعادة جدول المواعيد الافتراضي لاختبار سيناريوهات الحجز من جديد.'
-                : 'Restores the original deterministic mock schedule for re-evaluating scenarios.',
+            l10n.resetBaselineDesc,
             style: TextStyle(
               fontSize: 11.5,
               color: isDark
@@ -63,27 +59,16 @@ class DrawerResetSection extends StatelessWidget {
             },
             icon: const Icon(Icons.restore_rounded, size: 16),
             label: Text(
-              l10n.isArabic
-                  ? 'استعادة الجدول الأصلي'
-                  : 'Restore Baseline',
-              style: const TextStyle(
-                fontSize: 12,
-                fontWeight: FontWeight.w700,
-              ),
+              l10n.restoreBaselineBtn,
+              style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w700),
             ),
             style: OutlinedButton.styleFrom(
               foregroundColor: AppColors.primary,
-              side: const BorderSide(
-                color: AppColors.primary,
-                width: 1.2,
-              ),
+              side: const BorderSide(color: AppColors.primary, width: 1.2),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(10),
               ),
-              padding: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 8,
-              ),
+              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             ),
           ),
         ],

@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../core/di/app_scope.dart';
+import '../../../../core/di/injection_container.dart';
 import '../../../../core/localization/app_localizations.dart';
+import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/time_formatter.dart';
-import '../../../../domain/booking/booking_calculator.dart';
-import '../../../../domain/booking/booking_validator.dart';
 import '../../../../shared/widgets/glass_toast.dart';
-import '../view_models/booking_view_model.dart';
+import '../cubit/booking_cubit.dart';
 import '../widgets/app_drawer.dart';
 import '../widgets/booking_header.dart';
 import '../widgets/booking_summary.dart';
@@ -16,73 +16,66 @@ import '../widgets/duration_selector.dart';
 import '../widgets/schedule_view.dart';
 
 /// Main screen for Slotora appointment booking.
-class BookingView extends StatefulWidget {
-  final BookingViewModel? viewModel;
-
-  const BookingView({super.key, this.viewModel});
+///
+/// Provides its own [BookingCubit] via [BlocProvider].
+/// Reads [ThemeCubit] and [LocaleCubit] from the widget tree (provided in main).
+class BookingView extends StatelessWidget {
+  const BookingView({super.key});
 
   @override
-  State<BookingView> createState() => _BookingViewState();
+  Widget build(BuildContext context) {
+    return BlocProvider<BookingCubit>(
+      create: (_) => getIt<BookingCubit>(),
+      child: const _BookingViewContent(),
+    );
+  }
 }
 
-class _BookingViewState extends State<BookingView> {
-  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  BookingViewModel? _viewModel;
+class _BookingViewContent extends StatefulWidget {
+  const _BookingViewContent();
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    if (_viewModel == null) {
-      if (widget.viewModel != null) {
-        _viewModel = widget.viewModel;
-      } else {
-        final scope = AppScope.of(context);
-        const calculator = BookingCalculator();
-        final validator = BookingValidator(calculator: calculator);
-        _viewModel = BookingViewModel(
-          repository: scope.bookingRepository,
-          calculator: calculator,
-          validator: validator,
-        );
-      }
-    }
-  }
+  State<_BookingViewContent> createState() => _BookingViewContentState();
+}
 
-  void _handleConfirm() {
-    final vm = _viewModel;
-    if (vm == null) return;
+class _BookingViewContentState extends State<_BookingViewContent> {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  void _handleConfirm(BuildContext context) {
+    final cubit = context.read<BookingCubit>();
+    final state = cubit.state;
     final l10n = AppLocalizations.of(context);
 
-    if (!vm.state.hasSelection) {
+    if (!state.hasSelection) {
       GlassToast.show(
         context,
         type: ToastType.warning,
         title: l10n.toastErrorTitle,
-        description: l10n.msgNoSelection,
+        description: l10n.validationMessage(state.validationResult.status),
       );
       return;
     }
 
-    if (!vm.state.validationResult.isValid) {
+    if (!state.validationResult.isValid) {
       GlassToast.show(
         context,
         type: ToastType.error,
         title: l10n.toastErrorTitle,
-        description: l10n.validationMessage(vm.state.validationResult.status),
+        description: l10n.validationMessage(state.validationResult.status),
       );
       return;
     }
 
-    final booking = vm.confirmBooking();
+    final isArabic = context.read<LocaleCubit>().state.isArabic;
+    final booking = cubit.confirmBooking();
     if (booking != null) {
       final startStr = TimeFormatter.formatTime(
         booking.startTime,
-        isArabic: l10n.isArabic,
+        isArabic: isArabic,
       );
       final endStr = TimeFormatter.formatTime(
         booking.endTime,
-        isArabic: l10n.isArabic,
+        isArabic: isArabic,
       );
 
       GlassToast.show(
@@ -96,49 +89,34 @@ class _BookingViewState extends State<BookingView> {
 
   @override
   Widget build(BuildContext context) {
-    final vm = _viewModel;
-    if (vm == null) {
-      return const Scaffold(body: Center(child: CircularProgressIndicator()));
-    }
-
-    final scope = AppScope.of(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    final l10n = AppLocalizations.of(context);
 
-    return AnimatedBuilder(
-      animation: vm,
-      builder: (context, _) {
-        final state = vm.state;
-
+    return BlocBuilder<BookingCubit, BookingState>(
+      builder: (context, state) {
         return Scaffold(
           key: _scaffoldKey,
           backgroundColor: isDark ? AppColors.darkBg : AppColors.lightBg,
           endDrawer: AppDrawer(
-            themeController: scope.themeController,
-            localizationController: scope.localizationController,
             onResetSchedule: () {
-              vm.resetAll();
+              context.read<BookingCubit>().resetSchedule();
               GlassToast.show(
                 context,
                 type: ToastType.info,
-                title: scope.localizationController.isArabic
-                    ? 'تمت استعادة الجدول الافتراضي'
-                    : 'Baseline Schedule Restored',
+                title: l10n.baselineRestoredToast,
               );
             },
           ),
           body: Column(
             children: [
-              // Top Header
               BookingHeader(
                 onOpenDrawer: () => _scaffoldKey.currentState?.openEndDrawer(),
-                onReset: vm.resetSelection,
+                onReset: () => context.read<BookingCubit>().resetSelection(),
                 canReset:
                     state.hasSelection ||
                     state.selectedDuration.duration !=
                         const Duration(minutes: 30),
               ),
-
-              // Scrollable Schedule Body
               Expanded(
                 child: SingleChildScrollView(
                   physics: const BouncingScrollPhysics(),
@@ -149,40 +127,34 @@ class _BookingViewState extends State<BookingView> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         children: [
-                          // 1. Duration Selector
                           DurationSelector(
                             selectedDuration: state.selectedDuration,
-                            onDurationChanged: vm.selectDuration,
+                            onDurationChanged: context
+                                .read<BookingCubit>()
+                                .selectDuration,
                           ),
-
                           const SizedBox(height: 18),
-
-                          // 2. Schedule Grid
                           ScheduleView(
                             slots: state.slots,
                             selectedStart: state.selectedStart,
                             selectedSlots: state.selectedSlots,
                             validStartTimes: state.validStartTimes,
-                            onSelectSlot: vm.selectStartTime,
+                            onSelectSlot: context
+                                .read<BookingCubit>()
+                                .selectStartTime,
                           ),
-
                           const SizedBox(height: 20),
-
-                          // 3. Live Booking Summary
                           BookingSummary(
                             startTime: state.selectedStart,
                             endTime: state.calculatedEnd,
                             duration: state.selectedDuration,
                             validationResult: state.validationResult,
                           ),
-
                           const SizedBox(height: 18),
-
-                          // 4. Confirm Booking CTA
                           ConfirmBookingButton(
                             isValid: state.isBookingValid,
                             hasSelection: state.hasSelection,
-                            onConfirm: _handleConfirm,
+                            onConfirm: () => _handleConfirm(context),
                           ),
                         ],
                       ),

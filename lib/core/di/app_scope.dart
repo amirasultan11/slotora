@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../core/localization/localization_controller.dart';
 import '../../core/theme/theme_controller.dart';
 import '../../domain/booking/booking_repository.dart';
@@ -18,7 +19,8 @@ class AppScope extends InheritedWidget {
   });
 
   static AppScope of(BuildContext context) {
-    final AppScope? result = context.dependOnInheritedWidgetOfExactType<AppScope>();
+    final AppScope? result = context
+        .dependOnInheritedWidgetOfExactType<AppScope>();
     assert(result != null, 'No AppScope found in context');
     return result!;
   }

@@ -2,16 +2,13 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../data/models/booking_validation_result.dart';
+import '../../../../features/booking/domain/entities/booking_validation_result.dart';
 
 /// Explanatory error / guidance message banner shown when the chosen booking is invalid.
 class BookingValidationBanner extends StatelessWidget {
   final BookingValidationResult validationResult;
 
-  const BookingValidationBanner({
-    super.key,
-    required this.validationResult,
-  });
+  const BookingValidationBanner({super.key, required this.validationResult});
 
   @override
   Widget build(BuildContext context) {

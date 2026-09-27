@@ -22,9 +22,7 @@ class Booking {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is Booking &&
-          runtimeType == other.runtimeType &&
-          id == other.id;
+      other is Booking && runtimeType == other.runtimeType && id == other.id;
 
   @override
   int get hashCode => id.hashCode;

@@ -38,6 +38,8 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   intl: ^0.20.3
+  flutter_bloc: ^9.1.1
+  get_it: ^9.3.0
 
 dev_dependencies:
   flutter_test:

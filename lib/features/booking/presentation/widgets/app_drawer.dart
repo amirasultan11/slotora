@@ -1,32 +1,28 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../core/localization/app_localizations.dart';
-import '../../../../core/localization/localization_controller.dart';
+import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../core/theme/theme_controller.dart';
+import '../../../../core/theme/theme_cubit.dart';
 import 'drawer_header_section.dart';
 import 'drawer_language_option.dart';
 import 'drawer_reset_section.dart';
 import 'drawer_section_header.dart';
 import 'drawer_theme_option.dart';
 
-/// Side drawer providing appearance, language settings, and branding.
+/// Side drawer providing appearance, language settings, and baseline reset.
 class AppDrawer extends StatelessWidget {
-  final ThemeController themeController;
-  final LocalizationController localizationController;
   final VoidCallback onResetSchedule;
 
-  const AppDrawer({
-    super.key,
-    required this.themeController,
-    required this.localizationController,
-    required this.onResetSchedule,
-  });
+  const AppDrawer({super.key, required this.onResetSchedule});
 
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
+    final themeState = context.watch<ThemeCubit>().state;
+    final localeState = context.watch<LocaleCubit>().state;
 
     return Drawer(
       backgroundColor: isDark ? AppColors.darkSurface : AppColors.lightSurface,
@@ -34,10 +30,7 @@ class AppDrawer extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // Drawer Header with SVG Logo
             DrawerHeaderSection(isDark: isDark, l10n: l10n),
-
-            // Settings Content
             Expanded(
               child: ListView(
                 padding: const EdgeInsets.symmetric(
@@ -45,7 +38,6 @@ class AppDrawer extends StatelessWidget {
                   vertical: 16,
                 ),
                 children: [
-                  // Appearance Section
                   DrawerSectionHeader(
                     title: l10n.appearance,
                     icon: Icons.palette_outlined,
@@ -56,30 +48,29 @@ class AppDrawer extends StatelessWidget {
                     title: l10n.themeLight,
                     icon: Icons.light_mode_rounded,
                     mode: ThemeMode.light,
-                    isSelected: themeController.themeMode == ThemeMode.light,
+                    isSelected: themeState.themeMode == ThemeMode.light,
                     isDark: isDark,
-                    onSelect: themeController.setThemeMode,
+                    onSelect: context.read<ThemeCubit>().setThemeMode,
                   ),
                   DrawerThemeOption(
                     title: l10n.themeDark,
                     icon: Icons.dark_mode_rounded,
                     mode: ThemeMode.dark,
-                    isSelected: themeController.themeMode == ThemeMode.dark,
+                    isSelected: themeState.themeMode == ThemeMode.dark,
                     isDark: isDark,
-                    onSelect: themeController.setThemeMode,
+                    onSelect: context.read<ThemeCubit>().setThemeMode,
                   ),
                   DrawerThemeOption(
                     title: l10n.themeSystem,
                     icon: Icons.brightness_auto_rounded,
                     mode: ThemeMode.system,
-                    isSelected: themeController.themeMode == ThemeMode.system,
+                    isSelected: themeState.themeMode == ThemeMode.system,
                     isDark: isDark,
-                    onSelect: themeController.setThemeMode,
+                    onSelect: context.read<ThemeCubit>().setThemeMode,
                   ),
 
                   const SizedBox(height: 24),
 
-                  // Language Section
                   DrawerSectionHeader(
                     title: l10n.language,
                     icon: Icons.language_rounded,
@@ -89,21 +80,20 @@ class AppDrawer extends StatelessWidget {
                   DrawerLanguageOption(
                     title: l10n.langEn,
                     locale: const Locale('en'),
-                    isSelected: !localizationController.isArabic,
+                    isSelected: !localeState.isArabic,
                     isDark: isDark,
-                    onSelect: localizationController.setLocale,
+                    onSelect: context.read<LocaleCubit>().setLocale,
                   ),
                   DrawerLanguageOption(
                     title: l10n.langAr,
                     locale: const Locale('ar'),
-                    isSelected: localizationController.isArabic,
+                    isSelected: localeState.isArabic,
                     isDark: isDark,
-                    onSelect: localizationController.setLocale,
+                    onSelect: context.read<LocaleCubit>().setLocale,
                   ),
 
                   const SizedBox(height: 24),
 
-                  // Reset Demo Baseline action
                   DrawerResetSection(
                     isDark: isDark,
                     l10n: l10n,
@@ -112,8 +102,6 @@ class AppDrawer extends StatelessWidget {
                 ],
               ),
             ),
-
-            // Footer
             Padding(
               padding: const EdgeInsets.all(20),
               child: Text(

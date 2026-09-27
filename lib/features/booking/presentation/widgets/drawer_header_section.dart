@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 
@@ -32,14 +33,10 @@ class DrawerHeaderSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              SvgPicture.asset(
-                'assets/images/slotora_logo.svg',
-                width: 42,
-                height: 42,
-              ),
+              SvgPicture.asset(AppAssets.slotoraLogo, width: 42, height: 42),
               const SizedBox(width: 8),
               Text(
-                'Slotora',
+                l10n.appTitle,
                 style: TextStyle(
                   fontSize: 22,
                   fontWeight: FontWeight.w800,

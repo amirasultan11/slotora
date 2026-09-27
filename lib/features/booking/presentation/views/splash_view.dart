@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/theme/app_colors.dart';
 import 'booking_view.dart';
 
@@ -119,7 +120,7 @@ class _SplashViewState extends State<SplashView>
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           SvgPicture.asset(
-                            'assets/images/slotora_logo.svg',
+                            AppAssets.slotoraLogo,
                             width: 76,
                             height: 76,
                           ),

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../data/models/booking_duration.dart';
+import '../../../../features/booking/domain/entities/booking_duration.dart';
 import 'duration_option_tile.dart';
 
 /// Duration selector component allowing users to choose between 30m, 1h, 1.5h, 2h.
@@ -45,7 +45,7 @@ class DurationSelector extends StatelessWidget {
                 borderRadius: BorderRadius.circular(20),
               ),
               child: Text(
-                '${selectedDuration.requiredSlotCount} ${l10n.isArabic ? (selectedDuration.requiredSlotCount == 1 ? "خانة" : "خانات") : (selectedDuration.requiredSlotCount == 1 ? "slot" : "slots")}',
+                l10n.slotCountLabel(selectedDuration.requiredSlotCount),
                 style: const TextStyle(
                   fontSize: 11.5,
                   fontWeight: FontWeight.w600,

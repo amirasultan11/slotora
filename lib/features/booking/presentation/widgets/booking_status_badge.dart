@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../data/models/booking_validation_result.dart';
+import '../../../../features/booking/domain/entities/booking_validation_result.dart';
 
 /// Semantic status badge displayed in the booking summary header.
 class BookingStatusBadge extends StatelessWidget {
@@ -29,7 +29,7 @@ class BookingStatusBadge extends StatelessWidget {
           borderRadius: BorderRadius.circular(12),
         ),
         child: Text(
-          l10n.isArabic ? 'بانتظار الاختيار' : 'No selection',
+          l10n.noSelectionBadge,
           style: TextStyle(
             fontSize: 11,
             fontWeight: FontWeight.w600,
@@ -88,7 +88,7 @@ class BookingStatusBadge extends StatelessWidget {
           const Icon(Icons.close_rounded, size: 12, color: AppColors.error),
           const SizedBox(width: 4),
           Text(
-            l10n.isArabic ? 'غير صالح' : 'Invalid',
+            l10n.invalidBadge,
             style: const TextStyle(
               fontSize: 11,
               fontWeight: FontWeight.w700,

@@ -28,8 +28,9 @@ class BookingMetricTile extends StatelessWidget {
               Icon(
                 icon,
                 size: 13,
-                color:
-                    isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted,
+                color: isDark
+                    ? AppColors.darkTextMuted
+                    : AppColors.lightTextMuted,
               ),
               const SizedBox(width: 4),
               Text(

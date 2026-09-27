@@ -1,7 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import '../../data/models/booking_duration.dart';
-import '../../data/models/booking_validation_result.dart';
+
+import '../../features/booking/domain/entities/booking_duration.dart';
+import '../../features/booking/domain/entities/booking_validation_result.dart';
 
 /// Centralized internationalization service supporting English and Arabic.
 class AppLocalizations {
@@ -17,10 +18,7 @@ class AppLocalizations {
   static const LocalizationsDelegate<AppLocalizations> delegate =
       _AppLocalizationsDelegate();
 
-  static const List<Locale> supportedLocales = [
-    Locale('en'),
-    Locale('ar'),
-  ];
+  static const List<Locale> supportedLocales = [Locale('en'), Locale('ar')];
 
   bool get isArabic => locale.languageCode == 'ar';
 
@@ -53,10 +51,16 @@ class AppLocalizations {
       'lang_ar': 'العربية (Arabic)',
       'ready_to_book': 'Ready to confirm',
       'no_start_selected': 'Tap an available slot to start',
+      'no_selection_badge': 'No selection',
+      'invalid_badge': 'Invalid',
+      'slot': 'slot',
+      'slots': 'slots',
+      'start_label': 'START',
       'err_no_selection': 'Please select a starting time slot.',
       'err_booked': 'This booking contains a slot that is already booked.',
       'err_unavailable': 'This booking overlaps an unavailable appointment.',
-      'err_consecutive': "There aren't enough consecutive available slots for this duration.",
+      'err_consecutive':
+          "There aren't enough consecutive available slots for this duration.",
       'err_outside_hours': 'Your booking must end by 6:00 PM.',
       'err_isolated_gap': 'This booking would leave an isolated 30-minute gap.',
       'toast_success_title': 'Booking Confirmed',
@@ -64,6 +68,18 @@ class AppLocalizations {
       'toast_error_title': 'Validation Issue',
       'drawer_subtitle': 'Smart Local Appointment Scheduling',
       'drawer_version': 'Version 1.0.0 (Local-Only)',
+      'reset_baseline_title': 'Reset Baseline Schedule',
+      'reset_baseline_desc': 'Restores the original deterministic mock schedule for re-evaluating scenarios.',
+      'restore_baseline_btn': 'Restore Baseline',
+      'baseline_restored_toast': 'Baseline Schedule Restored',
+      'dur_30m': '30m',
+      'dur_1h': '1h',
+      'dur_1h30m': '1.5h',
+      'dur_2h': '2h',
+      'dur_full_30m': '30 mins',
+      'dur_full_1h': '1 hour',
+      'dur_full_1h30m': '1h 30m',
+      'dur_full_2h': '2 hours',
     },
     'ar': {
       'app_title': 'سلوتورا',
@@ -93,6 +109,11 @@ class AppLocalizations {
       'lang_ar': 'العربية',
       'ready_to_book': 'جاهز للتأكيد',
       'no_start_selected': 'انقر على خانة متاحة للبدء',
+      'no_selection_badge': 'بانتظار الاختيار',
+      'invalid_badge': 'غير صالح',
+      'slot': 'خانة',
+      'slots': 'خانات',
+      'start_label': 'البدء',
       'err_no_selection': 'يرجى تحديد وقت البدء.',
       'err_booked': 'هذا الحجز يتضمن موعداً محجوزاً مسبقاً.',
       'err_unavailable': 'هذا الحجز يتداخل مع موعد غير متاح.',
@@ -104,6 +125,19 @@ class AppLocalizations {
       'toast_error_title': 'تعذر تأكيد الحجز',
       'drawer_subtitle': 'جدولة ذكية للمواعيد المحلية',
       'drawer_version': 'الإصدار 1.0.0 (محلي بالكامل)',
+      'reset_baseline_title': 'إعادة ضبط الجدول التجريبي',
+      'reset_baseline_desc':
+          'استعادة جدول المواعيد الافتراضي لاختبار سيناريوهات الحجز من جديد.',
+      'restore_baseline_btn': 'استعادة الجدول الأصلي',
+      'baseline_restored_toast': 'تمت استعادة الجدول الافتراضي',
+      'dur_30m': '30 د',
+      'dur_1h': '1 س',
+      'dur_1h30m': '1.5 س',
+      'dur_2h': '2 س',
+      'dur_full_30m': '30 دقيقة',
+      'dur_full_1h': 'ساعة واحدة',
+      'dur_full_1h30m': 'ساعة ونصف',
+      'dur_full_2h': 'ساعتان',
     },
   };
 
@@ -113,6 +147,7 @@ class AppLocalizations {
         key;
   }
 
+  // Core UI strings
   String get appTitle => _get('app_title');
   String get appSubtitle => _get('app_subtitle');
   String get scheduleTitle => _get('schedule_title');
@@ -138,46 +173,56 @@ class AppLocalizations {
   String get language => _get('language');
   String get langEn => _get('lang_en');
   String get langAr => _get('lang_ar');
-  String get msgNoSelection => _get('err_no_selection');
-  String get msgBooked => _get('err_booked');
-  String get msgUnavailable => _get('err_unavailable');
-  String get msgConsecutive => _get('err_consecutive');
-  String get msgOutsideHours => _get('err_outside_hours');
-  String get msgIsolatedGap => _get('err_isolated_gap');
   String get readyToBook => _get('ready_to_book');
   String get noStartSelected => _get('no_start_selected');
+  String get noSelectionBadge => _get('no_selection_badge');
+  String get invalidBadge => _get('invalid_badge');
+  String get startLabel => _get('start_label');
   String get toastSuccessTitle => _get('toast_success_title');
   String get toastSuccessDesc => _get('toast_success_desc');
   String get toastErrorTitle => _get('toast_error_title');
   String get drawerSubtitle => _get('drawer_subtitle');
   String get drawerVersion => _get('drawer_version');
+  String get resetBaselineTitle => _get('reset_baseline_title');
+  String get resetBaselineDesc => _get('reset_baseline_desc');
+  String get restoreBaselineBtn => _get('restore_baseline_btn');
+  String get baselineRestoredToast => _get('baseline_restored_toast');
 
+  /// Slot count label respecting singular/plural and locale.
+  String slotCountLabel(int count) {
+    final word = count == 1 ? _get('slot') : _get('slots');
+    return '$count $word';
+  }
+
+  /// Short duration label used in duration option chips.
   String durationLabel(BookingDuration d) {
     switch (d) {
       case BookingDuration.minutes30:
-        return isArabic ? '30 د' : '30m';
+        return _get('dur_30m');
       case BookingDuration.minutes60:
-        return isArabic ? '1 س' : '1h';
+        return _get('dur_1h');
       case BookingDuration.minutes90:
-        return isArabic ? '1.5 س' : '1.5h';
+        return _get('dur_1h30m');
       case BookingDuration.minutes120:
-        return isArabic ? '2 س' : '2h';
+        return _get('dur_2h');
     }
   }
 
+  /// Full duration label used in the booking summary.
   String durationFullLabel(BookingDuration d) {
     switch (d) {
       case BookingDuration.minutes30:
-        return isArabic ? '30 دقيقة' : '30 mins';
+        return _get('dur_full_30m');
       case BookingDuration.minutes60:
-        return isArabic ? 'ساعة واحدة' : '1 hour';
+        return _get('dur_full_1h');
       case BookingDuration.minutes90:
-        return isArabic ? 'ساعة ونصف' : '1h 30m';
+        return _get('dur_full_1h30m');
       case BookingDuration.minutes120:
-        return isArabic ? 'ساعتان' : '2 hours';
+        return _get('dur_full_2h');
     }
   }
 
+  /// Maps a [BookingValidationStatus] to a localized user-facing message.
   String validationMessage(BookingValidationStatus status) {
     switch (status) {
       case BookingValidationStatus.valid:
@@ -205,9 +250,7 @@ class _AppLocalizationsDelegate
   const _AppLocalizationsDelegate();
 
   @override
-  bool isSupported(Locale locale) {
-    return ['en', 'ar'].contains(locale.languageCode);
-  }
+  bool isSupported(Locale locale) => ['en', 'ar'].contains(locale.languageCode);
 
   @override
   Future<AppLocalizations> load(Locale locale) {

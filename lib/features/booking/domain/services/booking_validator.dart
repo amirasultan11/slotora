@@ -1,8 +1,13 @@
-import '../../data/models/booking_validation_result.dart';
-import '../../data/models/time_slot.dart';
+import '../entities/booking_validation_result.dart';
+import '../entities/slot_status.dart';
+import '../entities/time_slot_entity.dart';
 import 'booking_calculator.dart';
 
 /// Single-responsibility service for validating appointment booking requests.
+///
+/// Pure domain service — imports only domain entities and domain calculator.
+/// Returns semantic [BookingValidationStatus] values; UI strings are
+/// resolved by the localization layer.
 class BookingValidator {
   final BookingCalculator calculator;
 
@@ -10,7 +15,7 @@ class BookingValidator {
 
   /// Validates a proposed booking against the current schedule and business rules.
   BookingValidationResult validate({
-    required List<TimeSlot> slots,
+    required List<TimeSlotEntity> slots,
     required DateTime? start,
     required Duration duration,
   }) {
@@ -18,11 +23,10 @@ class BookingValidator {
       return BookingValidationResult.noSelection;
     }
 
-    // Rule 4: Must not end after working hours (18:00)
+    // Rule: Must not end after working hours (18:00)
     if (!calculator.isWithinWorkingHours(start, duration)) {
       return const BookingValidationResult(
         status: BookingValidationStatus.outsideWorkingHours,
-        message: 'Your booking must end by 6:00 PM',
       );
     }
 
@@ -33,53 +37,48 @@ class BookingValidator {
       duration: duration,
     );
 
-    // Rule 3 & 4: Enough slots exist within the schedule
+    // Rule: Enough consecutive slots exist within the schedule boundary
     if (targetSlots.length < requiredCount) {
       return const BookingValidationResult(
         status: BookingValidationStatus.insufficientConsecutiveSlots,
-        message: "There aren't enough consecutive available slots for this duration.",
       );
     }
 
-    // Check consecutiveness
+    // Check strict consecutiveness
     for (int i = 0; i < targetSlots.length - 1; i++) {
       if (!targetSlots[i].endTime.isAtSameMomentAs(
         targetSlots[i + 1].startTime,
       )) {
         return const BookingValidationResult(
           status: BookingValidationStatus.insufficientConsecutiveSlots,
-          message: 'Slots must be strictly consecutive.',
         );
       }
     }
 
-    // Rule 1: Contains booked slot
+    // Rule: Contains a booked slot
     for (final slot in targetSlots) {
       if (slot.isBooked) {
         return BookingValidationResult(
           status: BookingValidationStatus.bookedSlot,
           conflictingSlot: slot,
-          message: 'This booking contains a slot that is already booked.',
         );
       }
     }
 
-    // Rule 2: Contains unavailable slot
+    // Rule: Contains an unavailable slot
     for (final slot in targetSlots) {
       if (slot.isUnavailable) {
         return BookingValidationResult(
           status: BookingValidationStatus.unavailableSlot,
           conflictingSlot: slot,
-          message: 'This booking overlaps an unavailable appointment.',
         );
       }
     }
 
-    // Rule 6: Special Isolated 30-Minute Gap Rule
+    // Rule: X O X isolated 30-minute gap
     if (_createsIsolatedGap(slots: slots, targetSlots: targetSlots)) {
       return const BookingValidationResult(
         status: BookingValidationStatus.isolatedGap,
-        message: 'This booking would leave an isolated 30-minute gap.',
       );
     }
 
@@ -88,7 +87,7 @@ class BookingValidator {
 
   /// Calculates all valid starting times for a given duration against the current schedule.
   List<DateTime> getValidStartTimes({
-    required List<TimeSlot> slots,
+    required List<TimeSlotEntity> slots,
     required Duration duration,
   }) {
     final List<DateTime> validStarts = [];
@@ -106,19 +105,22 @@ class BookingValidator {
   }
 
   /// Evaluates whether the proposed booking creates a new isolated 30-minute available gap (X O X).
+  ///
+  /// Algorithm:
+  /// 1. Records original slot statuses.
+  /// 2. Simulates booking by marking target slots as booked.
+  /// 3. Checks if any slot is now isolated that was not previously isolated.
   bool _createsIsolatedGap({
-    required List<TimeSlot> slots,
-    required List<TimeSlot> targetSlots,
+    required List<TimeSlotEntity> slots,
+    required List<TimeSlotEntity> targetSlots,
   }) {
     if (slots.length < 3) return false;
 
     final targetIds = {for (final s in targetSlots) s.id};
 
-    // Helper to determine if a slot is blocked (booked or unavailable)
     bool isBlocked(SlotStatus status) =>
         status == SlotStatus.booked || status == SlotStatus.unavailable;
 
-    // Helper to check if slot at index `i` is an isolated gap in a given list
     bool isIsolatedInList(List<SlotStatus> statuses, int i) {
       if (i <= 0 || i >= statuses.length - 1) return false;
       return statuses[i] == SlotStatus.available &&
@@ -128,15 +130,11 @@ class BookingValidator {
 
     final originalStatuses = slots.map((s) => s.status).toList();
 
-    // Create temporary copy of schedule with proposed booking applied
     final simulatedStatuses = slots.map((s) {
-      if (targetIds.contains(s.id)) {
-        return SlotStatus.booked;
-      }
+      if (targetIds.contains(s.id)) return SlotStatus.booked;
       return s.status;
     }).toList();
 
-    // Check if any slot becomes isolated in the simulated schedule that was not already isolated
     for (int i = 1; i < simulatedStatuses.length - 1; i++) {
       final isNowIsolated = isIsolatedInList(simulatedStatuses, i);
       final wasAlreadyIsolated = isIsolatedInList(originalStatuses, i);

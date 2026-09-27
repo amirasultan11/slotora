@@ -1,16 +1,16 @@
 import 'package:flutter/foundation.dart';
 
-import '../../../../data/models/booking_duration.dart';
-import '../../../../data/models/booking_validation_result.dart';
-import '../../../../data/models/time_slot.dart';
+import '../../domain/entities/booking_duration.dart';
+import '../../domain/entities/booking_validation_result.dart';
+import '../../domain/entities/time_slot_entity.dart';
 
 /// Immutable presentation state for the booking feature.
 @immutable
 class BookingState {
-  final List<TimeSlot> slots;
+  final List<TimeSlotEntity> slots;
   final DateTime? selectedStart;
   final BookingDuration selectedDuration;
-  final List<TimeSlot> selectedSlots;
+  final List<TimeSlotEntity> selectedSlots;
   final DateTime? calculatedEnd;
   final Set<DateTime> validStartTimes;
   final BookingValidationResult validationResult;
@@ -29,7 +29,7 @@ class BookingState {
   bool get hasSelection => selectedStart != null;
 
   factory BookingState.initial({
-    required List<TimeSlot> slots,
+    required List<TimeSlotEntity> slots,
     required Set<DateTime> validStartTimes,
   }) {
     return BookingState(
@@ -44,11 +44,11 @@ class BookingState {
   }
 
   BookingState copyWith({
-    List<TimeSlot>? slots,
+    List<TimeSlotEntity>? slots,
     DateTime? selectedStart,
     bool clearSelectedStart = false,
     BookingDuration? selectedDuration,
-    List<TimeSlot>? selectedSlots,
+    List<TimeSlotEntity>? selectedSlots,
     DateTime? calculatedEnd,
     bool clearCalculatedEnd = false,
     Set<DateTime>? validStartTimes,

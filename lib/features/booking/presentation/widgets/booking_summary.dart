@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/time_formatter.dart';
-import '../../../../data/models/booking_duration.dart';
-import '../../../../data/models/booking_validation_result.dart';
+import '../../../../features/booking/domain/entities/booking_duration.dart';
+import '../../../../features/booking/domain/entities/booking_validation_result.dart';
 import 'booking_metric_tile.dart';
 import 'booking_status_badge.dart';
 import 'booking_validation_banner.dart';
@@ -44,10 +44,7 @@ class BookingSummary extends StatelessWidget {
       decoration: BoxDecoration(
         color: isDark ? AppColors.darkCard : AppColors.lightSurface,
         borderRadius: BorderRadius.circular(18),
-        border: Border.all(
-          color: _getCardBorderColor(isDark),
-          width: 1.5,
-        ),
+        border: Border.all(color: _getCardBorderColor(isDark), width: 1.5),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withValues(alpha: isDark ? 0.3 : 0.04),

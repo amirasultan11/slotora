@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
 
-import 'time_slot.dart';
+import 'time_slot_entity.dart';
 
-/// Semantic status of the booking validation.
+/// Semantic status of the booking validation — pure domain concept, no UI strings.
 enum BookingValidationStatus {
   valid,
   noSelection,
@@ -14,29 +14,25 @@ enum BookingValidationStatus {
   conflict,
 }
 
-// Detailed result of validating a proposed appointment booking.
+/// Domain result of validating a proposed appointment booking.
+///
+/// Contains only semantic data. UI messages are mapped from [BookingValidationStatus]
+/// by the localization layer (AppLocalizations.validationMessage).
 @immutable
 class BookingValidationResult {
   final BookingValidationStatus status;
-  final String? message;
-  final TimeSlot? conflictingSlot;
+  final TimeSlotEntity? conflictingSlot;
 
-  const BookingValidationResult({
-    required this.status,
-    this.message,
-    this.conflictingSlot,
-  });
+  const BookingValidationResult({required this.status, this.conflictingSlot});
 
   bool get isValid => status == BookingValidationStatus.valid;
 
   static const BookingValidationResult valid = BookingValidationResult(
     status: BookingValidationStatus.valid,
-    message: null,
   );
 
   static const BookingValidationResult noSelection = BookingValidationResult(
     status: BookingValidationStatus.noSelection,
-    message: 'Please select a starting time slot.',
   );
 
   @override
@@ -51,5 +47,5 @@ class BookingValidationResult {
   int get hashCode => Object.hash(status, conflictingSlot);
 
   @override
-  String toString() => 'BookingValidationResult($status, $message)';
+  String toString() => 'BookingValidationResult($status)';
 }

@@ -2,15 +2,15 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../data/models/time_slot.dart';
+import '../../../../features/booking/domain/entities/time_slot_entity.dart';
 import 'schedule_legend.dart';
 import 'time_slot_tile.dart';
 
 /// Renders the day schedule grid with semantic status legend.
 class ScheduleView extends StatelessWidget {
-  final List<TimeSlot> slots;
+  final List<TimeSlotEntity> slots;
   final DateTime? selectedStart;
-  final List<TimeSlot> selectedSlots;
+  final List<TimeSlotEntity> selectedSlots;
   final Set<DateTime> validStartTimes;
   final ValueChanged<DateTime> onSelectSlot;
 
@@ -93,7 +93,8 @@ class ScheduleView extends StatelessWidget {
               itemBuilder: (context, index) {
                 final slot = slots[index];
                 final isSelected = selectedIds.contains(slot.id);
-                final isSelectedStart = selectedStart != null &&
+                final isSelectedStart =
+                    selectedStart != null &&
                     selectedStart!.isAtSameMomentAs(slot.startTime);
                 final isValidStart = validStartTimes.any(
                   (start) => start.isAtSameMomentAs(slot.startTime),

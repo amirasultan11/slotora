@@ -1,4 +1,5 @@
 import 'dart:ui';
+
 import 'package:flutter/material.dart';
 
 import '../../core/theme/app_colors.dart';
@@ -46,14 +47,14 @@ class _GlassToastWidgetState extends State<GlassToastWidget>
       reverseCurve: Curves.easeInCubic,
     );
 
-    _slideAnimation = Tween<Offset>(
-      begin: const Offset(0, -0.4),
-      end: Offset.zero,
-    ).animate(CurvedAnimation(
-      parent: _controller,
-      curve: Curves.easeOutBack,
-      reverseCurve: Curves.easeInCubic,
-    ));
+    _slideAnimation =
+        Tween<Offset>(begin: const Offset(0, -0.4), end: Offset.zero).animate(
+          CurvedAnimation(
+            parent: _controller,
+            curve: Curves.easeOutBack,
+            reverseCurve: Curves.easeInCubic,
+          ),
+        );
 
     _scaleAnimation = Tween<double>(begin: 0.92, end: 1.0).animate(
       CurvedAnimation(

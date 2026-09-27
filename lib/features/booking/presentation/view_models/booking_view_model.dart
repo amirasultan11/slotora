@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+
 import '../../../../data/models/booking.dart';
 import '../../../../data/models/booking_duration.dart';
 import '../../../../data/models/booking_validation_result.dart';
@@ -19,7 +20,7 @@ class BookingViewModel extends ChangeNotifier {
     required this.repository,
     this.calculator = const BookingCalculator(),
     BookingValidator? validator,
-  })  : validator = validator ?? BookingValidator(calculator: calculator) {
+  }) : validator = validator ?? BookingValidator(calculator: calculator) {
     _init();
   }
 
@@ -27,25 +28,23 @@ class BookingViewModel extends ChangeNotifier {
 
   void _init() {
     final slots = repository.getSchedule();
-    final validStarts = validator.getValidStartTimes(
-      slots: slots,
-      duration: BookingDuration.minutes30.duration,
-    ).toSet();
+    final validStarts = validator
+        .getValidStartTimes(
+          slots: slots,
+          duration: BookingDuration.minutes30.duration,
+        )
+        .toSet();
 
-    _state = BookingState.initial(
-      slots: slots,
-      validStartTimes: validStarts,
-    );
+    _state = BookingState.initial(slots: slots, validStartTimes: validStarts);
   }
 
   /// Changes the requested duration and dynamically recalculates state.
   void selectDuration(BookingDuration duration) {
     if (_state.selectedDuration == duration) return;
 
-    final validStarts = validator.getValidStartTimes(
-      slots: _state.slots,
-      duration: duration.duration,
-    ).toSet();
+    final validStarts = validator
+        .getValidStartTimes(slots: _state.slots, duration: duration.duration)
+        .toSet();
 
     if (_state.selectedStart == null) {
       _state = _state.copyWith(
@@ -167,10 +166,12 @@ class BookingViewModel extends ChangeNotifier {
 
     // Refresh state after booking
     final updatedSlots = repository.getSchedule();
-    final updatedValidStarts = validator.getValidStartTimes(
-      slots: updatedSlots,
-      duration: _state.selectedDuration.duration,
-    ).toSet();
+    final updatedValidStarts = validator
+        .getValidStartTimes(
+          slots: updatedSlots,
+          duration: _state.selectedDuration.duration,
+        )
+        .toSet();
 
     _state = _state.copyWith(
       slots: updatedSlots,
@@ -188,10 +189,12 @@ class BookingViewModel extends ChangeNotifier {
   /// Resets the current selection and returns to default duration.
   /// Preserves the existing schedule.
   void resetSelection() {
-    final validStarts = validator.getValidStartTimes(
-      slots: _state.slots,
-      duration: BookingDuration.minutes30.duration,
-    ).toSet();
+    final validStarts = validator
+        .getValidStartTimes(
+          slots: _state.slots,
+          duration: BookingDuration.minutes30.duration,
+        )
+        .toSet();
 
     _state = _state.copyWith(
       clearSelectedStart: true,

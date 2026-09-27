@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/utils/time_formatter.dart';
-import '../../../../data/models/time_slot.dart';
+import '../../../../features/booking/domain/entities/time_slot_entity.dart';
 
 /// Interactive tile representing a 30-minute time slot with multi-attribute semantic states.
 class TimeSlotTile extends StatelessWidget {
-  final TimeSlot slot;
+  final TimeSlotEntity slot;
   final bool isSelected;
   final bool isSelectedStart;
   final bool isValidStart;
@@ -25,7 +26,10 @@ class TimeSlotTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
     final l10n = AppLocalizations.of(context);
-    final timeStr = TimeFormatter.formatSlotId(slot.id, isArabic: l10n.isArabic);
+    final timeStr = TimeFormatter.formatSlotId(
+      slot.id,
+      isArabic: l10n.isArabic,
+    );
 
     // Multi-attribute styling configuration
     Color bgColor;
@@ -41,21 +45,31 @@ class TimeSlotTile extends StatelessWidget {
       borderColor = AppColors.primary;
       textColor = isDark ? Colors.white : AppColors.primaryDark;
       statusColor = AppColors.primary;
-      iconData = isSelectedStart ? Icons.flag_rounded : Icons.check_circle_rounded;
+      iconData = isSelectedStart
+          ? Icons.flag_rounded
+          : Icons.check_circle_rounded;
       statusLabel = l10n.legendSelected;
     } else if (slot.isBooked) {
-      bgColor = isDark ? AppColors.bookedDarkBg.withValues(alpha: 0.4) : AppColors.bookedLightBg;
-      borderColor = isDark ? AppColors.bookedDark.withValues(alpha: 0.3) : AppColors.bookedLight.withValues(alpha: 0.3);
+      bgColor = isDark
+          ? AppColors.bookedDarkBg.withValues(alpha: 0.4)
+          : AppColors.bookedLightBg;
+      borderColor = isDark
+          ? AppColors.bookedDark.withValues(alpha: 0.3)
+          : AppColors.bookedLight.withValues(alpha: 0.3);
       textColor = isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted;
       statusColor = isDark ? AppColors.bookedDark : AppColors.bookedLight;
       iconData = Icons.lock_outline_rounded;
       statusLabel = l10n.legendBooked;
       opacity = 0.72;
     } else if (slot.isUnavailable) {
-      bgColor = isDark ? AppColors.unavailableDarkBg.withValues(alpha: 0.3) : AppColors.unavailableLightBg;
+      bgColor = isDark
+          ? AppColors.unavailableDarkBg.withValues(alpha: 0.3)
+          : AppColors.unavailableLightBg;
       borderColor = isDark ? AppColors.darkBorder : AppColors.lightBorder;
       textColor = isDark ? AppColors.darkTextMuted : AppColors.lightTextMuted;
-      statusColor = isDark ? AppColors.unavailableDark : AppColors.unavailableLight;
+      statusColor = isDark
+          ? AppColors.unavailableDark
+          : AppColors.unavailableLight;
       iconData = Icons.block_flipped;
       statusLabel = l10n.legendUnavailable;
       opacity = 0.65;
@@ -63,11 +77,17 @@ class TimeSlotTile extends StatelessWidget {
       // Available
       bgColor = isDark ? AppColors.darkCard : AppColors.lightSurface;
       borderColor = isValidStart
-          ? (isDark ? AppColors.availableDark.withValues(alpha: 0.4) : AppColors.availableLight.withValues(alpha: 0.4))
+          ? (isDark
+                ? AppColors.availableDark.withValues(alpha: 0.4)
+                : AppColors.availableLight.withValues(alpha: 0.4))
           : (isDark ? AppColors.darkBorder : AppColors.lightBorder);
-      textColor = isDark ? AppColors.darkTextPrimary : AppColors.lightTextPrimary;
+      textColor = isDark
+          ? AppColors.darkTextPrimary
+          : AppColors.lightTextPrimary;
       statusColor = isDark ? AppColors.availableDark : AppColors.availableLight;
-      iconData = isValidStart ? Icons.radio_button_unchecked_rounded : Icons.schedule_rounded;
+      iconData = isValidStart
+          ? Icons.radio_button_unchecked_rounded
+          : Icons.schedule_rounded;
       statusLabel = l10n.legendAvailable;
     }
 
@@ -81,10 +101,7 @@ class TimeSlotTile extends StatelessWidget {
         decoration: BoxDecoration(
           color: bgColor,
           borderRadius: BorderRadius.circular(14),
-          border: Border.all(
-            color: borderColor,
-            width: isSelected ? 2.0 : 1.0,
-          ),
+          border: Border.all(color: borderColor, width: isSelected ? 2.0 : 1.0),
           boxShadow: isSelected
               ? [
                   BoxShadow(
@@ -112,11 +129,7 @@ class TimeSlotTile extends StatelessWidget {
                       color: statusColor.withValues(alpha: 0.12),
                       shape: BoxShape.circle,
                     ),
-                    child: Icon(
-                      iconData,
-                      size: 16,
-                      color: statusColor,
-                    ),
+                    child: Icon(iconData, size: 16, color: statusColor),
                   ),
                   const SizedBox(width: 8),
 
@@ -147,7 +160,9 @@ class TimeSlotTile extends StatelessWidget {
                                 color: statusColor,
                               ),
                             ),
-                            if (slot.isAvailable && !isValidStart && !isSelected) ...[
+                            if (slot.isAvailable &&
+                                !isValidStart &&
+                                !isSelected) ...[
                               const SizedBox(width: 4),
                               Icon(
                                 Icons.warning_amber_rounded,
@@ -173,7 +188,7 @@ class TimeSlotTile extends StatelessWidget {
                         borderRadius: BorderRadius.circular(8),
                       ),
                       child: Text(
-                        l10n.isArabic ? 'البدء' : 'START',
+                        l10n.startLabel,
                         style: const TextStyle(
                           fontSize: 9,
                           fontWeight: FontWeight.w800,

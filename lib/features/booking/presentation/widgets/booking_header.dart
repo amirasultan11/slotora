@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_svg/svg.dart';
 
+import '../../../../core/constants/app_assets.dart';
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 
@@ -41,14 +42,10 @@ class BookingHeader extends StatelessWidget {
             Row(
               mainAxisSize: MainAxisSize.min,
               children: [
-                SvgPicture.asset(
-                  'assets/images/slotora_logo.svg',
-                  width: 34,
-                  height: 34,
-                ),
+                SvgPicture.asset(AppAssets.slotoraLogo, width: 34, height: 34),
                 const SizedBox(width: 7),
                 Text(
-                  'Slotora',
+                  l10n.appTitle,
                   style: TextStyle(
                     fontSize: 20,
                     fontWeight: FontWeight.w800,

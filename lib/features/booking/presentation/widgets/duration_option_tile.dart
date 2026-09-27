@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
-import '../../../../data/models/booking_duration.dart';
+import '../../../../features/booking/domain/entities/booking_duration.dart';
 
 /// Single interactive selectable option tile for booking durations (30m, 1h, etc.).
 class DurationOptionTile extends StatelessWidget {
@@ -45,8 +45,8 @@ class DurationOptionTile extends StatelessWidget {
                     color: isSelected
                         ? AppColors.primary
                         : (isDark
-                            ? AppColors.darkBorder
-                            : AppColors.lightBorder),
+                              ? AppColors.darkBorder
+                              : AppColors.lightBorder),
                     width: isSelected ? 1.5 : 1,
                   ),
                   boxShadow: isSelected
@@ -70,8 +70,8 @@ class DurationOptionTile extends StatelessWidget {
                         color: isSelected
                             ? Colors.white
                             : (isDark
-                                ? AppColors.darkTextPrimary
-                                : AppColors.lightTextPrimary),
+                                  ? AppColors.darkTextPrimary
+                                  : AppColors.lightTextPrimary),
                       ),
                     ),
                     const SizedBox(height: 2),
@@ -83,8 +83,8 @@ class DurationOptionTile extends StatelessWidget {
                         color: isSelected
                             ? Colors.white.withValues(alpha: 0.85)
                             : (isDark
-                                ? AppColors.darkTextMuted
-                                : AppColors.lightTextMuted),
+                                  ? AppColors.darkTextMuted
+                                  : AppColors.lightTextMuted),
                       ),
                     ),
                   ],

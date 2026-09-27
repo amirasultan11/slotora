@@ -14,8 +14,14 @@ class AppConstants {
   static const int slotDurationMinutes = 30;
 
   /// Working hours as TimeOfDay
-  static const TimeOfDay workDayStart = TimeOfDay(hour: startHour, minute: startMinute);
-  static const TimeOfDay workDayEnd = TimeOfDay(hour: endHour, minute: endMinute);
+  static const TimeOfDay workDayStart = TimeOfDay(
+    hour: startHour,
+    minute: startMinute,
+  );
+  static const TimeOfDay workDayEnd = TimeOfDay(
+    hour: endHour,
+    minute: endMinute,
+  );
 
   /// Reference date used for standardizing TimeSlot DateTime instances
   static final DateTime baseDate = DateTime(2026, 1, 1);

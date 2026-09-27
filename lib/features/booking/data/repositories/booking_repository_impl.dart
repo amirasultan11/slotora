@@ -1,36 +1,31 @@
-import '../../domain/booking/booking_repository.dart';
-import '../local/local_schedule_data_source.dart';
-import '../models/booking.dart';
-import '../models/time_slot.dart';
+import '../../domain/entities/slot_status.dart';
+import '../../domain/entities/time_slot_entity.dart';
+import '../../domain/repositories/booking_repository.dart';
+import '../datasources/local_schedule_data_source.dart';
 
 /// Concrete implementation of [BookingRepository] backed by [LocalScheduleDataSource].
 class BookingRepositoryImpl implements BookingRepository {
   final LocalScheduleDataSource _dataSource;
 
-  //
   BookingRepositoryImpl({LocalScheduleDataSource? dataSource})
-    //قبل ما الكونستراكتور يشتغل حدد قيمه الداتا سورس
     : _dataSource = dataSource ?? LocalScheduleDataSource();
 
-  //
   @override
-  List<TimeSlot> getSchedule() {
-    return _dataSource.getSchedule();
-  }
+  List<TimeSlotEntity> getSchedule() => _dataSource.getSchedule();
 
   @override
-  Booking confirmBooking({
+  BookingEntity confirmBooking({
     required DateTime startTime,
     required DateTime endTime,
     required Duration duration,
-    required List<TimeSlot> slotsToBook,
+    required List<TimeSlotEntity> slotsToBook,
   }) {
     final updated = slotsToBook
         .map((s) => s.copyWith(status: SlotStatus.booked))
         .toList();
     _dataSource.updateSlots(updated);
 
-    final booking = Booking(
+    return BookingEntity(
       id: 'book_${startTime.millisecondsSinceEpoch}',
       startTime: startTime,
       endTime: endTime,
@@ -38,13 +33,8 @@ class BookingRepositoryImpl implements BookingRepository {
       slotIds: slotsToBook.map((s) => s.id).toList(),
       createdAt: DateTime.now(),
     );
-
-    return booking;
   }
 
   @override
-  void resetSchedule() {
-    _dataSource.reset();
-  }
+  void resetSchedule() => _dataSource.reset();
 }
-//flow ViewModel Repository DataSource Schedule

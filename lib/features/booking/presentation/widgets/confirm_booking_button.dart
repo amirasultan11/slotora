@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/theme/app_colors.dart';
 
@@ -62,7 +63,9 @@ class ConfirmBookingButton extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Icon(
-              isEnabled ? Icons.check_circle_rounded : Icons.lock_outline_rounded,
+              isEnabled
+                  ? Icons.check_circle_rounded
+                  : Icons.lock_outline_rounded,
               size: 20,
             ),
             const SizedBox(width: 8),
