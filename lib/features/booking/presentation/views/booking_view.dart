@@ -87,10 +87,19 @@ class _BookingViewContentState extends State<_BookingViewContent> {
     }
   }
 
+  void _handleResetSchedule(BuildContext context) {
+    final l10n = AppLocalizations.of(context);
+    context.read<BookingCubit>().resetSchedule();
+    GlassToast.show(
+      context,
+      type: ToastType.info,
+      title: l10n.baselineRestoredToast,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final l10n = AppLocalizations.of(context);
 
     return BlocBuilder<BookingCubit, BookingState>(
       builder: (context, state) {
@@ -98,14 +107,7 @@ class _BookingViewContentState extends State<_BookingViewContent> {
           key: _scaffoldKey,
           backgroundColor: isDark ? AppColors.darkBg : AppColors.lightBg,
           endDrawer: AppDrawer(
-            onResetSchedule: () {
-              context.read<BookingCubit>().resetSchedule();
-              GlassToast.show(
-                context,
-                type: ToastType.info,
-                title: l10n.baselineRestoredToast,
-              );
-            },
+            onResetSchedule: () => _handleResetSchedule(context),
           ),
           body: Column(
             children: [
