@@ -5,8 +5,6 @@ import '../../../../core/localization/app_localizations.dart';
 import '../../../../core/localization/locale_cubit.dart';
 import '../../../../core/theme/app_colors.dart';
 import '../../../../core/theme/theme_cubit.dart';
-import '../../../../core/localization/localization_controller.dart';
-import '../../../../core/theme/theme_controller.dart';
 import 'drawer_header_section.dart';
 import 'drawer_language_option.dart';
 import 'drawer_reset_section.dart';
@@ -16,15 +14,8 @@ import 'drawer_theme_option.dart';
 /// Side drawer providing appearance, language settings, and baseline reset.
 class AppDrawer extends StatelessWidget {
   final VoidCallback onResetSchedule;
-  final ThemeController? themeController;
-  final LocalizationController? localizationController;
 
-  const AppDrawer({
-    super.key,
-    required this.onResetSchedule,
-    this.themeController,
-    this.localizationController,
-  });
+  const AppDrawer({super.key, required this.onResetSchedule});
 
   @override
   Widget build(BuildContext context) {
